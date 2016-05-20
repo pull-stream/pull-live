@@ -12,17 +12,20 @@ module.exports = function (createSource, createLive) {
       if(!isLive && !isOld)
         throw new Error('ls with neither old or new is empty')
 
-      var old = createSource(opts)
-
-      if(!isLive) return old
-
-      var live = createLive(opts)
-      if(!isOld) return live
-
-      //old & live
-      return Cat([old, opts.sync === false ? null : Once({sync: true}), live])
+      if(isLive && isOld)
+        return Cat([
+          createSource(opts),
+          opts.sync === false ? null : Once({sync: true}),
+          createLive(opts)
+        ])
+      else if(!isLive)
+        return createSource(opts)
+      else
+        return createLive(opts)
   }
 }
+
+
 
 
 
